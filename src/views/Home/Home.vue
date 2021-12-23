@@ -45,7 +45,10 @@
         </el-card>
       </div>
       <el-card shadow="hover"
-               style="height:288px"></el-card>
+               style="height:288px">
+        <div style="height:288px"
+             ref="echart"></div>
+      </el-card>
       <div class="graph">
         <el-card shadow="hover"></el-card>
         <el-card shadow="hover"></el-card>
@@ -54,42 +57,13 @@
   </el-row>
 </template>
 <script>
+import { getHome } from '../../api/data'
+import * as echarts from 'echarts'
 export default {
   data () {
     return {
       userImg: require('../../assets/images/user.png'),
-      tableData: [
-        {
-          name: 'oppo',
-          todayBuy: 100,
-          monthBuy: 300,
-          totalBuy: 800
-        },
-        {
-          name: 'vivo',
-          todayBuy: 100,
-          monthBuy: 300,
-          totalBuy: 800
-        },
-        {
-          name: 'xiaomi',
-          todayBuy: 100,
-          monthBuy: 300,
-          totalBuy: 800
-        },
-        {
-          name: 'huawei',
-          todayBuy: 100,
-          monthBuy: 300,
-          totalBuy: 800
-        },
-        {
-          name: 'redmi',
-          todayBuy: 100,
-          monthBuy: 300,
-          totalBuy: 800
-        }
-      ],
+      tableData: [],
       tableLabel: {
         name: '课程',
         todayBuy: '今日购买',
@@ -126,8 +100,64 @@ export default {
         value: 1234,
         icon: 's-goods',
         color: '#5ab1ef'
-      }]
+      }],
+      echartsData: {
+        legend: {
+          textStyle: {
+            color: '#333'
+          }
+        },
+        grid: {
+          left: '20%'
+        },
+        tooltip: {
+          trigger: 'axis'
+        },
+        xAxis: {
+          type: 'category',
+          data: [],
+          axisLine: {
+            lineStyle: '#17b3a3'
+          }
+        },
+        axisLabel: { interval: 0, color: '#333' },
+        yAxis: [{
+          type: 'value',
+          axisLine: {
+            lineStyle: {
+              color: '#17b3a3'
+            }
+          }
+        }],
+        color: ['#2ec7c9', '#b6a2de', '#5ab1ef', '#ffb980', '#d87a80', '#8d98b3'],
+        series: []
+      }
     }
+  },
+
+  methods: {
+    getTableData () {
+      getHome().then((res) => {
+        this.tableData = res.data.tableData
+        // 折线图的展示
+        const order = res.data.oderData
+        console.log(order)
+        this.echartsData.xAxis = order.data
+        const keyArray = Object.keys(order.data[0])
+        keyArray.forEach((key) => {
+          this.echartsData.series.push({
+            name: key,
+            data: order.data.map((item) => item[key]),
+            type: 'line'
+          })
+          const myEchartsOrder = echarts.init(this.$refs.echart)
+          myEchartsOrder.setOption(this.echartsData)
+        })
+      })
+    }
+  },
+  mounted () {
+    this.getTableData()
   }
 }
 </script>

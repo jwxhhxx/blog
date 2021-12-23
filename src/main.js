@@ -3,6 +3,7 @@ import App from './App.vue'
 import './registerServiceWorker'
 import router from './router'
 import store from './store'
+import http from 'axios'
 import { Button, Select, Container, Aside, Header, Main, Menu, MenuItemGroup, MenuItem, Submenu, Dropdown, DropdownItem, DropdownMenu, Row, Col, Card, Table, TableColumn } from 'element-ui'
 // import tab from './store/tab'
 // import ElementUI from 'element-ui'
@@ -27,6 +28,9 @@ Vue.use(Col)
 Vue.use(Card)
 Vue.use(Table)
 Vue.use(TableColumn)
+Vue.prototype.$http = http
+
+if (process.env.NODE_ENV === 'development') require('@/api/mock')
 new Vue({
   router,
   store,
