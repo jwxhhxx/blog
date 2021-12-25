@@ -27,6 +27,7 @@ export default {
     CommonHeader
   }
 }
+document.querySelector('body').setAttribute('style', 'margin:0')
 </script>
 <style lang="scss" scoped>
 .el-header {
